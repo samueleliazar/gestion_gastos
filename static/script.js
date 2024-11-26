@@ -1,41 +1,51 @@
+
 document.getElementById('generar-gastos-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const mes = document.getElementById('mes').value;
     const año = document.getElementById('año').value;
-    const departamentos = document.getElementById('departamentos').value.split(',').map(id => parseInt(id.trim()));
+    const departamentoId = parseInt(document.getElementById('departamento-id-generar').value); // Cambiado
     const monto = document.getElementById('monto').value;
 
-    const response = await fetch('/generar_gastos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mes, año, departamento_ids: departamentos, monto })
-    });
+    try {
+        const response = await fetch('/generar_gastos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mes: parseInt(mes),
+                año: parseInt(año),
+                departamento_id: departamentoId,
+                monto: parseInt(monto)
+            })
+        });
 
-    const result = await response.json();
-    mostrarResultado(result, response.ok);
+        const result = await response.json();
+        mostrarResultadoGastos(result, response.ok);
+    } catch (error) {
+        console.error("Error al generar gastos:", error);
+    }
 });
 
-
-document.getElementById('gastos-pendientes-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const mes = document.getElementById('consulta-mes').value;
-    const año = document.getElementById('consulta-año').value;
-
-    const response = await fetch(`/gastos_pendientes?mes=${mes}&año=${año}`);
-    const result = await response.json();
-
-    mostrarPendientes(result, response.ok);
-});
-
-
-function mostrarResultado(data, ok) {
-    const resultado = document.getElementById('resultados');
+function mostrarResultadoGastos(data, ok) {
+    const resultado = document.getElementById('resultado-gastos');
     resultado.className = `alert ${ok ? 'alert-success' : 'alert-danger'} d-block`;
     resultado.textContent = data.mensaje || JSON.stringify(data);
 }
 
+document.getElementById('consultar-gastos-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const mes = document.getElementById('mes-consulta').value;
+    const año = document.getElementById('año-consulta').value;
+
+    try {
+        const response = await fetch(`/gastos_pendientes?mes=${mes}&año=${año}`);
+        const result = await response.json();
+        mostrarPendientes(result, response.ok);
+    } catch (error) {
+        console.error("Error al consultar gastos:", error);
+    }
+});
 
 function mostrarPendientes(data, ok) {
     const pendientes = document.getElementById('pendientes');
@@ -54,38 +64,36 @@ function mostrarPendientes(data, ok) {
         div.textContent = data.mensaje || JSON.stringify(data);
         pendientes.appendChild(div);
     }
-    document.getElementById('marcar-pagado-form').addEventListener('submit', async (e) => {
-        e.preventDefault(); 
-    
-        
-        const departamentoId = document.getElementById('departamento-id').value;
-        const periodo = document.getElementById('periodo').value;
-        const fechaPago = document.getElementById('fecha-pago').value;
-    
-        try {
-            
-            const response = await fetch('/marcar_pagado', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    departamento_id: parseInt(departamentoId),
-                    periodo,
-                    fecha_pago: fechaPago
-                })
-            });
-    
-            
-            const result = await response.json();
-            mostrarResultadoPago(result, response.ok);
-        } catch (error) {
-            console.error("Error al marcar como pagado:", error);
-        }
-    });
-    
-    
-    function mostrarResultadoPago(data, ok) {
-        const resultado = document.getElementById('resultado-pago');
-        resultado.className = `alert ${ok ? 'alert-success' : 'alert-danger'} d-block`;
-        resultado.textContent = data.mensaje || JSON.stringify(data);
+}
+
+
+document.getElementById('marcar-pagado-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const departamentoId = document.getElementById('departamento-id-pagado').value;
+    const periodo = document.getElementById('periodo').value;
+    const fechaPago = document.getElementById('fecha-pago').value;
+
+    try {
+        const response = await fetch('/marcar_pagado', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                departamento_id: parseInt(departamentoId),
+                periodo,
+                fecha_pago: fechaPago
+            })
+        });
+
+        const result = await response.json();
+        mostrarResultadoPago(result, response.ok);
+    } catch (error) {
+        console.error("Error al marcar como pagado:", error);
     }
+});
+
+function mostrarResultadoPago(data, ok) {
+    const resultado = document.getElementById('resultado-pago');
+    resultado.className = `alert ${ok ? 'alert-success' : 'alert-danger'} d-block`;
+    resultado.textContent = data.mensaje || JSON.stringify(data);
 }

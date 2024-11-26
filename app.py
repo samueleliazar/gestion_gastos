@@ -17,36 +17,32 @@ def home():
 @app.route('/generar_gastos', methods=['POST'])
 def generar_gastos():
     data = request.json
-    try:
-        mes = int(data.get("mes"))  
-        año = int(data.get("año")) 
-    except (ValueError, TypeError):
-        return jsonify({"error": "Mes y año deben ser números válidos"}), 400
-
-    departamento_ids = data.get("departamento_ids")
+    mes = data.get("mes")
+    año = data.get("año")
+    departamento_id = data.get("departamento_id")  
     monto = data.get("monto", 10000)
 
-    if not departamento_ids or not isinstance(departamento_ids, list):
-        return jsonify({"error": "Debe especificar una lista de departamentos"}), 400
+    if not mes or not año:
+        return jsonify({"error": "Faltan mes o año"}), 400
 
-    departamentos_actualizados = []
+    if not departamento_id:
+        return jsonify({"error": "Debe especificar un ID de departamento"}), 400
+
+
     for depto in departamentos:
-        if depto["id"] in departamento_ids:
+        if depto["id"] == departamento_id:
             depto["gastos"].append({
                 "periodo": f"{mes:02d}-{año}",
                 "monto": monto,
                 "pagado": False,
                 "fecha_pago": None
             })
-            departamentos_actualizados.append(depto["id"])
+            return jsonify({
+                "mensaje": "Gasto común generado correctamente",
+                "departamento_actualizado": departamento_id
+            }), 200
 
-    if not departamentos_actualizados:
-        return jsonify({"mensaje": "No se encontraron departamentos válidos"}), 404
-
-    return jsonify({
-        "mensaje": "Gastos comunes generados correctamente",
-        "departamentos_actualizados": departamentos_actualizados
-    }), 200
+    return jsonify({"error": "Departamento no encontrado"}), 404
     
     
 
