@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from datetime import datetime
 
 app = Flask(__name__)
@@ -10,22 +10,25 @@ departamentos = [
     {"id": 1305, "gastos": []}
 ]
 
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 @app.route('/generar_gastos', methods=['POST'])
 def generar_gastos():
     data = request.json
-    mes = data.get("mes")
-    año = data.get("año")
-    departamento_ids = data.get("departamento_ids")  
-    monto = data.get("monto", 10000)  
+    try:
+        mes = int(data.get("mes"))  
+        año = int(data.get("año")) 
+    except (ValueError, TypeError):
+        return jsonify({"error": "Mes y año deben ser números válidos"}), 400
 
-    if not mes or not año:
-        return jsonify({"error": "Faltan mes o año"}), 400
+    departamento_ids = data.get("departamento_ids")
+    monto = data.get("monto", 10000)
 
     if not departamento_ids or not isinstance(departamento_ids, list):
         return jsonify({"error": "Debe especificar una lista de departamentos"}), 400
 
-  
     departamentos_actualizados = []
     for depto in departamentos:
         if depto["id"] in departamento_ids:
