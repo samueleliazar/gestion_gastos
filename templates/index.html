@@ -12,7 +12,20 @@
         <h1 class="text-center">Gestión de Gastos Comunes</h1>
         <hr>
 
-        
+        <!-- Sección para Crear Departamento -->
+        <h2>Crear Departamento</h2>
+        <form id="crear-departamento-form">
+            <div class="mb-3">
+                <label for="departamento-id-crear" class="form-label">ID del Departamento:</label>
+                <input type="number" id="departamento-id-crear" class="form-control" placeholder="Ej: 101" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Crear Departamento</button>
+        </form>
+        <div id="resultado-crear-departamento" class="mt-3"></div>
+
+        <hr>
+
+        <!-- Sección para Generar Gastos Comunes -->
         <h2>Generar Gastos Comunes</h2>
         <form id="generar-gastos-form">
             <div class="mb-3">
@@ -24,9 +37,8 @@
                 <input type="number" id="año" class="form-control" placeholder="Ej: 2024" required>
             </div>
             <div class="mb-3">
-                <label for="departamento-id" class="form-label">ID del Departamento:</label>
+                <label for="departamento-id-generar" class="form-label">ID del Departamento:</label>
                 <input type="number" id="departamento-id-generar" class="form-control" placeholder="Ej: 101" required>
-
             </div>
             <div class="mb-3">
                 <label for="monto" class="form-label">Monto:</label>
@@ -36,12 +48,11 @@
         </form>
         <div id="resultado-gastos" class="mt-3"></div>
 
-        
-        <div id="resultados" class="alert d-none"></div>
+        <hr>
 
-        
+        <!-- Sección para Consultar Gastos Pendientes -->
         <form id="consultar-gastos-form">
-            <h3>Consultar Gastos Pendientes</h3>
+            <h2>Consultar Gastos Pendientes</h2>
             <div class="mb-3">
                 <label for="mes-consulta" class="form-label">Mes:</label>
                 <input type="number" id="mes-consulta" class="form-control" placeholder="Ej: 11" required>
@@ -52,16 +63,16 @@
             </div>
             <button type="submit" class="btn btn-primary">Consultar</button>
         </form>
-        
-        <div id="resultado-consulta" class="mt-3"></div>
+        <div id="pendientes" class="mt-3"></div>
 
-        <div id="pendientes"></div>
+        <hr>
+
+        <!-- Sección para Marcar Gasto como Pagado -->
         <form id="marcar-pagado-form" class="mt-4">
-            <h3>Marcar Gasto como Pagado</h3>
+            <h2>Marcar Gasto como Pagado</h2>
             <div class="mb-3">
-                <label for="departamento-id" class="form-label">ID del Departamento:</label>
+                <label for="departamento-id-pagado" class="form-label">ID del Departamento:</label>
                 <input type="number" id="departamento-id-pagado" class="form-control" required>
-
             </div>
             <div class="mb-3">
                 <label for="periodo" class="form-label">Período (MM-YYYY):</label>
@@ -77,6 +88,5 @@
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    
 </body>
 </html>

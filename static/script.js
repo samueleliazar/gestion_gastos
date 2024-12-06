@@ -97,3 +97,29 @@ function mostrarResultadoPago(data, ok) {
     resultado.className = `alert ${ok ? 'alert-success' : 'alert-danger'} d-block`;
     resultado.textContent = data.mensaje || JSON.stringify(data);
 }
+
+// Crear Departamento
+document.getElementById('crear-departamento-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const departamentoId = parseInt(document.getElementById('departamento-id-crear').value);
+
+    try {
+        const response = await fetch('/crear_departamento', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: departamentoId })
+        });
+
+        const result = await response.json();
+        mostrarResultadoCrearDepartamento(result, response.ok);
+    } catch (error) {
+        console.error("Error al crear departamento:", error);
+    }
+});
+
+function mostrarResultadoCrearDepartamento(data, ok) {
+    const resultado = document.getElementById('resultado-crear-departamento');
+    resultado.className = `alert ${ok ? 'alert-success' : 'alert-danger'} d-block`;
+    resultado.textContent = data.mensaje || JSON.stringify(data);
+}
