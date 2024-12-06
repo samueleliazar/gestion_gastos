@@ -4,26 +4,23 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Configuración de SQLite como base de datos
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gastos_comunes.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Modelos de la base de datos
 class Departamento(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     gastos = db.relationship('Gasto', backref='departamento', lazy=True)
 
 class Gasto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    periodo = db.Column(db.String(7), nullable=False)  # Formato MM-YYYY
+    periodo = db.Column(db.String(7), nullable=False) 
     monto = db.Column(db.Float, nullable=False, default=10000)
     pagado = db.Column(db.Boolean, default=False)
-    fecha_pago = db.Column(db.String(10), nullable=True)  # Formato YYYY-MM-DD
+    fecha_pago = db.Column(db.String(10), nullable=True) 
     departamento_id = db.Column(db.Integer, db.ForeignKey('departamento.id'), nullable=False)
 
-# Inicialización de la base de datos
 with app.app_context():
     db.create_all()
 
@@ -31,10 +28,7 @@ with app.app_context():
 def home():
     return render_template('index.html')
 
-# Resto del código permanece igual...
 
-
-# Endpoint para crear un departamento
 @app.route('/crear_departamento', methods=['POST'])
 def crear_departamento():
     data = request.json
@@ -43,11 +37,11 @@ def crear_departamento():
     if not departamento_id:
         return jsonify({"error": "Debe especificar un ID para el departamento"}), 400
 
-    # Verificar si el departamento ya existe
+    
     if Departamento.query.get(departamento_id):
         return jsonify({"error": "El departamento ya existe"}), 400
 
-    # Crear el nuevo departamento
+    
     nuevo_departamento = Departamento(id=departamento_id)
     db.session.add(nuevo_departamento)
     db.session.commit()
@@ -57,7 +51,7 @@ def crear_departamento():
         "departamento": {"id": nuevo_departamento.id}
     }), 201
 
-# Endpoint para generar gastos
+
 @app.route('/generar_gastos', methods=['POST'])
 def generar_gastos():
     data = request.json
@@ -89,7 +83,7 @@ def generar_gastos():
         "departamento_actualizado": departamento_id
     }), 200
 
-# Endpoint para marcar un gasto como pagado
+
 @app.route('/marcar_pagado', methods=['POST'])
 def marcar_pagado():
     data = request.json
@@ -128,7 +122,7 @@ def marcar_pagado():
         "mensaje": estado
     }), 200
 
-# Endpoint para consultar gastos pendientes
+
 @app.route('/gastos_pendientes', methods=['GET'])
 def gastos_pendientes():
     mes = request.args.get("mes", type=int)

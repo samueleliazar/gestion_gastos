@@ -4,7 +4,7 @@ document.getElementById('generar-gastos-form').addEventListener('submit', async 
 
     const mes = document.getElementById('mes').value;
     const año = document.getElementById('año').value;
-    const departamentoId = parseInt(document.getElementById('departamento-id-generar').value); // Cambiado
+    const departamentoId = parseInt(document.getElementById('departamento-id-generar').value); 
     const monto = document.getElementById('monto').value;
 
     try {
@@ -98,7 +98,6 @@ function mostrarResultadoPago(data, ok) {
     resultado.textContent = data.mensaje || JSON.stringify(data);
 }
 
-// Crear Departamento
 document.getElementById('crear-departamento-form').addEventListener('submit', async (e) => {
     e.preventDefault();
 
